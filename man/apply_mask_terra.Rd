@@ -15,7 +15,9 @@ apply_mask_terra(r, mask_path, threshold = 0.8, chunk_size = 20000)
 
 \item{chunk_size}{Nombre max de couches traitees par bloc quand
 \code{nlyr(r)} depasse 65535. Default \code{20000} (marge confortable
-sous la limite, ajustable selon la RAM/disque disponibles).}
+sous la limite, ajustable selon la RAM/disque disponibles). Une valeur
+superieure a 65535 est silencieusement plafonnee a 65535, puisque
+chaque bloc est lui-meme ecrit en GeoTIFF et soumis a cette meme limite.}
 }
 \value{
 The masked \code{terra::SpatRaster}.
@@ -36,4 +38,14 @@ recombines en une seule source multi-fichiers, sans jamais materialiser
 l'ensemble en RAM. Le masque etant purement spatial (identique a chaque
 pas de temps), le decoupage en blocs ne change pas le resultat : un pixel
 exclu par le masque l'est de la meme facon dans chaque bloc.
+
+\strong{Precision numerique :} \code{terra} ecrit sur disque en simple
+precision (\code{datatype = "FLT4S"}) PAR DEFAUT (voir
+\code{terra::terraOptions()}), des que le resultat ne tient pas en RAM --
+ce qui inclut la branche par blocs ci-dessous (TOUJOURS ecrite sur
+disque). Sans le \code{datatype = "FLT8S"} explicite ci-dessous, un
+masquage qui declenche une ecriture disque perdrait silencieusement de la
+precision par rapport a un masquage qui reste en RAM -- incoherence
+potentielle non liee au chunking lui-meme, mais au meme risque general
+(voir la note similaire dans \code{resample_daily_terra()}).
 }

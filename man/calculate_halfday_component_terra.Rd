@@ -13,7 +13,9 @@ calculate_halfday_component_terra(
   above_thresholds,
   mask_path = NULL,
   threshold = 0.8,
-  cores = 1L
+  cores = 1L,
+  target_chunk_gb = 1,
+  window_days = 5L
 )
 }
 \arguments{
@@ -41,6 +43,14 @@ reduites (voir note ci-dessous).}
 \code{cores} (see its performance note) -- the rolling-window percentile
 step is by far the most expensive part of this function. Default
 \code{1} (sequential, identical to previous behaviour).}
+
+\item{target_chunk_gb}{Passed to \code{temp_extremum_terra()} /
+\code{resample_daily_terra()} (see its memory note) for memory-safe
+temporal chunking of large hourly series.}
+
+\item{window_days}{Passed to \code{calculate_percentiles_terra()}: width,
+in days, of the rolling window used to compute the percentile
+threshold. Default \code{5L}.}
 }
 \value{
 Same structure as \code{calculate_halfday_component()}:
